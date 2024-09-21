@@ -1,0 +1,251 @@
+-- RS Hub
+
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+
+local Window = OrionLib:MakeWindow({Name = "RS Hub V1 - Slap Battles But Bad", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
+
+--  CONFIGS
+
+local highlights = {}
+
+
+local function enableESP()
+	for _, player in ipairs(game.Players:GetPlayers()) do
+		if player ~= game.Players.LocalPlayer then
+			local highlight = Instance.new("Highlight")
+			highlight.Parent = player.Character
+			highlights[player] = highlight
+		end
+	end
+end
+
+local function disableESP()
+	for _, highlight in pairs(highlights) do
+		highlight:Destroy()
+	end
+	highlights = {}
+end
+
+getgenv().antivoid = false
+
+local ANTI_VOID = Instance.new("Part",workspace)
+ANTI_VOID.CFrame = CFrame.new(14.5383425, 195.975098, -210.753754)
+ANTI_VOID.Anchored = true
+ANTI_VOID.Transparency = 1
+ANTI_VOID.Size = Vector3.new(2048,.5,2048)
+ANTI_VOID.CanCollide = false
+
+local SAFE_SPOT = Instance.new("Part",workspace)
+SAFE_SPOT.CFrame = CFrame.new(14.5383425, 195.975098, -2000.753754)
+SAFE_SPOT.Anchored = true
+SAFE_SPOT.Transparency = .5
+SAFE_SPOT.Size = Vector3.new(100,50,100)
+SAFE_SPOT.CanCollide = true
+SAFE_SPOT.Name = "SafeSpot"
+
+
+-- MAIN STUFF 
+
+local MainTab = Window:MakeTab({
+	Name = "Main",
+	Icon = "rbxassetid://4034483344",
+	PremiumOnly = false
+})
+
+local Section = MainTab:AddSection({
+	Name = "Features"
+})
+
+
+MainTab:AddSlider({
+	Name = "Walkspeed",
+	Min = 16,
+	Max = 500,
+	Default = 5,
+	Color = Color3.fromRGB(0, 0, 255),
+	Increment = 1,
+	ValueName = "Speed",
+	Callback = function(Value)
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
+	end    
+})
+
+MainTab:AddSlider({
+    Name = "Jump Power",
+    Min = 16,
+    Max = 100,
+    Default = 5,
+    Color = Color3.fromRGB(0, 0, 255),
+    Increment = 1,
+    ValueName = "Height",
+    Callback = function(Value)
+     game.Players.LocalPlayer.Character.Humanoid.JumpPower = Value
+    end    
+   })
+
+local TrollTab = Window:MakeTab({
+	Name = "Troll",
+	Icon = "rbxassetid://15828456252",
+	PremiumOnly = false
+})
+
+local Section = TrollTab:AddSection({
+	Name = "OP Features"
+})
+
+TrollTab:AddToggle({
+	Name = "Killstreak: EX Ball Spam (Must have Killstreak: EX equipped)",
+	Default = false,
+	Callback = function(Value)
+        getgenv().silver = Value
+
+        while task.wait() and getgenv().silver == true do
+            game:GetService("ReplicatedStorage").SilverBall:FireServer()
+        end
+    end    
+})
+
+MainTab:AddSlider({
+	Name = "Reach",
+	Min = 1,
+	Max = 300,
+	Default = 1,
+	Color = Color3.fromRGB(75, 151, 75),
+	Increment = 1,
+	ValueName = "REACH",
+	Callback = function(Value)
+        pcall(function()
+			local hitbox = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool").Hitbox or game.Players.LocalPlayer.Backpack:FindFirstChildOfClass("Tool").Hitbox or nil
+			if hitbox ~= nil then
+				hitbox.Size = Vector3.new(Value,Value,Value)
+				hitbox.Transparency = .5
+			else
+				warn("Hitbox not found.")
+			end
+		end)
+	end    
+})
+
+MainTab:AddToggle({
+	Name = "Player ESP",
+	Default = false,
+	Callback = function(Value)
+		getgenv().esp = Value
+
+		if getgenv().esp == true then
+			enableESP()
+		else
+			disableESP()
+		end
+	end    
+})
+
+
+MainTab:AddToggle({
+	Name = "Auto Slap",
+	Default = false,
+	Callback = function(Value)
+		getgenv().autoslap = Value
+
+		while getgenv().autoslap == true do
+			task.wait(.005)
+			pcall(function()
+				game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool"):Activate()
+			end)
+		end
+	end    
+})
+
+
+-- anti stuff section in the main tab
+local Section = MainTab:AddSection({
+	Name = "Anti Stuff"
+})
+
+MainTab:AddToggle({
+	Name = "Anti Void",
+	Default = false,
+	Callback = function(val)
+		getgenv().antivoid = val
+
+		if getgenv().antivoid == true then
+			ANTI_VOID.CanCollide = true
+			ANTI_VOID.Transparency = 1
+		else
+			ANTI_VOID.CanCollide = false
+			ANTI_VOID.Transparency = 1
+		end
+
+	end    
+})
+
+MainTab:AddToggle({
+	Name = "Anti Barriers",
+	Default = false,
+	Callback = function()
+	    for i,v in pairs(game.Workspace:GetDescendants()) do
+			if v.Name == "kill" then
+			v:Destroy()
+			end
+			end   
+})
+
+TrollTab:AddButton({
+	Name = "Godmode (USE IN THE LOBBY)",
+	Callback = function()
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(17.4133415, 196.587753, -202.145111)
+	  end    
+})
+
+local BadgesTab = Window:MakeTab({
+	Name = "Badges",
+	Icon = "rbxassetid://14325956891",
+	PremiumOnly = false
+})
+
+BadgesTab:AddButton({
+	Name = "Teleport to the Admin Trial",
+	Callback = function()
+		game:GetService("TeleportService"):Teleport(17454752574)
+	  end    
+})
+
+
+BadgesTab:AddButton({
+	Name = "Teleport to the Backrooms",
+	Callback = function()
+		game:GetService("TeleportService"):Teleport(12442954945)
+	  end    
+})
+
+
+	getgenv().bobfarm = false -- set bobfarm to false by default
+
+BadgesTab:AddToggle({
+	Name = "Bob Farm",
+	Default = false,
+	Callback = function(Value)
+	getgenv().bobfarm = Value -- set bobfarm to the toggle value
+	end
+	})
+	
+	while true do
+	if getgenv().bobfarm then
+	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-69.166954, 653.117615, -275.994537, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+	wait(0.5)
+	local player = game.Players.LocalPlayer
+	local character = player.Character
+	local humanoid = character.Humanoid
+	
+	function pressE()
+	game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.E, false, nil)
+	wait(1)
+	humanoid.Health = 0
+	end
+	
+	pressE()
+	else
+	-- do nothing if bobfarm is false
+	end
+	wait(0.1)
+	end
